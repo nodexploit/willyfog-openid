@@ -1,5 +1,4 @@
 <?php
-// Routes
 
 $app->get('/authorize', '\App\Http\Controllers\OAuthController:authorize');
 $app->post('/authorize', '\App\Http\Controllers\OAuthController:postAuthorize');

@@ -4,8 +4,7 @@
 apt-get -y install apache2
 
 # Configure virtualhosts
-echo "Listen 80
-<VirtualHost *:80>
+echo "<VirtualHost *:80>
     ServerName openid
     DocumentRoot /var/www/openid/public/
     ErrorLog  /var/www/openid/logs/projects-error.log
@@ -15,11 +14,11 @@ echo "Listen 80
             AllowOverride All
             Require all granted
     </Directory>
-</VirtualHost>" > /etc/apache2/sites-enabled/openid.conf
-
-ln -s /home/vagrant/openid /var/www/openid
+</VirtualHost>" > /etc/apache2/sites-available/openid.conf
 
 a2enmod rewrite
+a2ensite openid
+a2dissite 000-default.conf
 
 # Install php7
 add-apt-repository -y ppa:ondrej/php
@@ -58,7 +57,7 @@ ROTO
 
 echo "$BOOTSTRAP_DB" > /tmp/bootstrap.sql
 mysql -uroot -proot < /tmp/bootstrap.sql
-mysql -uroot -proot openid < db/schema.sql
+mysql -uroot -proot openid < /home/vagrant/openid/db/schema.sql
 
 # Install composer
 curl -OL https://getcomposer.org/composer.phar

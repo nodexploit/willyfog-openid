@@ -38,9 +38,9 @@ Vagrant.configure(2) do |config|
 
   # Public network
   # --------------------
-  if PUBLIC_GUEST_IP
-    config.vm.network "public_network", ip: PUBLIC_GUEST_IP
-  end
+  #if PUBLIC_GUEST_IP
+  #  config.vm.network "public_network", ip: PUBLIC_GUEST_IP
+  #end
 
   # Optional (Remove if desired)
   config.vm.provider :virtualbox do |vb|

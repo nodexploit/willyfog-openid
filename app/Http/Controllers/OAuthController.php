@@ -3,6 +3,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Response;
 use Interop\Container\ContainerInterface;
 use OAuth2\Request as OAuthRequest;
 use OAuth2\Response as OAuthResponse;
@@ -20,7 +21,9 @@ class OAuthController
     {
         $server = $this->ci->get('oauth');
 
-        return $server->handleTokenRequest(OAuthRequest::createFromGlobals())->send();
+        return Response::createFromOAuth(
+            $server->handleTokenRequest(OAuthRequest::createFromGlobals())
+        );
     }
 
     public function authorize($request, $response, $args)
@@ -31,8 +34,7 @@ class OAuthController
         $oa_response = new OAuthResponse();
 
         if (!$server->validateAuthorizeRequest($oa_request, $oa_response)) {
-            $oa_response->send();
-            die;
+            return Response::createFromOAuth($oa_response);
         }
 
         return $this->ci->get('view')->render($response, 'authorize.phtml', [
@@ -51,6 +53,6 @@ class OAuthController
 
         $server->handleAuthorizeRequest($oa_request, $oa_response, $is_authorized);
 
-        return $response->withHeader('Location', $oa_response->getHttpHeader('Location'));
+        return Response::createFromOAuth($oa_response);
     }
 }

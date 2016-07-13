@@ -1,18 +1,27 @@
-# Slim Framework 3 Skeleton Application
+willyfog-openid
+===============
 
-Use this skeleton application to quickly setup and start working on a new Slim Framework 3 application. This application uses the latest Slim 3 with the PHP-View template renderer. It also uses the Monolog logger.
+## Deploy
 
-This skeleton application was built for Composer. This makes setting up a new Slim Framework application quick and easy.
+Install dependencies: `composer install`
 
-## Install the Application
+Generate public and private keys:
 
-Run this command from the directory in which you want to install your new Slim Framework application.
+```
+openssl genrsa -out data/privkey.pem 4096
+openssl rsa -in privkey.pem -pubout -out data/pubkey.pem
+```
 
-    php composer.phar create-project slim/slim-skeleton [my-app-name]
+## Give it a try
 
-Replace `[my-app-name]` with the desired directory name for your new application. You'll want to:
+Access `http://192.168.33.10/authorize?client_id=testclient&redirect_uri=http://127.0.0.1/login&response_type=code&scope=openid&state=xyz`
 
-* Point your virtual host document root to your new application's `public/` directory.
-* Ensure `logs/` is web writeable.
+Authorize the request!
 
-That's it! Now go build something cool.
+Take the `code` param from the query string, and then call:
+
+```
+curl http://192.168.33.10/token -d 'grant_type=authorization_code&client_id=testclient&code=<QUEY_STRING_CODE>&redirect_uri=http://127.0.0.1/login'
+```
+
+And then you will have your brand new access token.

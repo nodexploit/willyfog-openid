@@ -6,4 +6,4 @@ CREATE TABLE oauth_users (username VARCHAR(255) NOT NULL, password VARCHAR(2000)
 CREATE TABLE oauth_scopes (scope TEXT, is_default BOOLEAN);
 CREATE TABLE oauth_jwt (client_id VARCHAR(80) NOT NULL, subject VARCHAR(80), public_key VARCHAR(2000), CONSTRAINT jwt_client_id_pk PRIMARY KEY (client_id));
 
-INSERT INTO oauth_clients (client_id, redirect_uri, grant_types) VALUES ('testclient', 'http://192.168.33.10', 'authorization_code')
+INSERT INTO oauth_clients (client_id, redirect_uri, grant_types) VALUES ('testclient', 'http://127.0.0.1/login', 'authorization_code')

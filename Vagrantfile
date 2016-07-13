@@ -57,5 +57,5 @@ Vagrant.configure(2) do |config|
   # Synced Folder
   # --------------------
   config.vm.synced_folder ".", "/home/vagrant/#{File.basename(Dir.getwd)}"
-  config.vm.synced_folder ".", "/var/www/openid", mount_options: [ "dmode=774", "fmode=664" ], owner: 'vagrant', group: 'www-data'
+  config.vm.synced_folder ".", "/var/www/#{File.basename(Dir.getwd)}", mount_options: [ "dmode=774", "fmode=664" ], owner: 'vagrant', group: 'www-data'
 end

@@ -5,19 +5,19 @@ apt-get -y install apache2
 
 # Configure virtualhosts
 echo "<VirtualHost *:80>
-    ServerName openid
-    DocumentRoot /var/www/openid/public/
-    ErrorLog  /var/www/openid/logs/projects-error.log
-    CustomLog /var/www/openid/logs/projects-access.log combined
-    <Directory '/var/www/openid/public/'>
+    ServerName $1.com
+    DocumentRoot /var/www/$1/public/
+    ErrorLog  /var/www/$1/logs/projects-error.log
+    CustomLog /var/www/$1/logs/projects-access.log combined
+    <Directory '/var/www/$1/public/'>
             Options Indexes Followsymlinks
             AllowOverride All
             Require all granted
     </Directory>
-</VirtualHost>" > /etc/apache2/sites-available/openid.conf
+</VirtualHost>" > /etc/apache2/sites-available/$1.conf
 
 a2enmod rewrite
-a2ensite openid
+a2ensite $1
 a2dissite 000-default.conf
 
 # Install php7

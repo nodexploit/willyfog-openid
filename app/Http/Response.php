@@ -3,7 +3,6 @@
 
 namespace App\Http;
 
-
 use Slim\Http\Headers;
 use Slim\Http\Stream;
 

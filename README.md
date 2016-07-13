@@ -56,5 +56,5 @@ And then you will have your brand new access token like this:
     3ViIjpudWxsLCJhdWQiOiJ0ZXN0Y2xpZW50IiwiaWF0IjoxNDY4NDQzMjY0LCJleHAiOjE0
     Njg0NDY4NjQsImF1dGhfdGltZSI6MTQ2ODQ0MzI2NH0.pcxhbmsrezlJheJJdG1N8xX8EIb
     nOZNgZQjUoBcjBjfwcBd3HNuzl3sG_b4wWSSzLJon8MydxugE9nFdXT3pED..."
-  }
+ }
 ```

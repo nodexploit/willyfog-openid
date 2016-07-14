@@ -45,9 +45,7 @@ $ openssl rsa -in data/privkey.pem -pubout -out data/pubkey.pem
 
 `http://192.168.33.10/authorize?client_id=testclient&redirect_uri=http://127.0.0.1/login&response_type=code&scope=openid&state=xyz`
 
-2. Authorize the request!
-
-![Yes we can](docs/authorize.png)
+2. Authorize the request! Try with username `willy` password `foobar`.
 
 3. Take the `code` param from the query string, and then call the `token` endpoint:
 

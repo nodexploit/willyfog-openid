@@ -3,19 +3,6 @@
 
 $container = $app->getContainer();
 
-// view renderer
-$container['view'] = function ($c) {
-    $settings = $c->get('settings')['renderer'];
-
-    $view = new \Slim\Views\Twig($settings['template_path']);
-    $view->addExtension(new \Slim\Views\TwigExtension(
-        $c['router'],
-        $c['request']->getUri()
-    ));
-
-    return $view;
-};
-
 // monolog
 $container['logger'] = function ($c) {
     $settings = $c->get('settings')['logger'];
@@ -26,9 +13,42 @@ $container['logger'] = function ($c) {
     return $logger;
 };
 
+// Session
+$container['session'] = function ($c) {
+    return new \App\Http\Session();
+};
+
+$container['flash'] = function ($c) {
+    return new \Slim\Flash\Messages();
+};
+
+// view renderer
+$container['view'] = function ($c) {
+    $settings = $c->get('settings')['renderer'];
+
+    $view = new \Slim\Views\Twig($settings['template_path']);
+    $view->addExtension(new \Slim\Views\TwigExtension(
+        $c['router'],
+        $c['request']->getUri()
+    ));
+    $view->offsetSet('flash', $c->get('flash'));
+    $view->offsetSet('session', $c->get('session'));
+
+    return $view;
+};
+
+// PDO
+$container['db'] = function ($c) {
+    $db_settings = $c->get('settings')['database'];
+    $dsn = "mysql:dbname=${db_settings['name']};host=${db_settings['host']}";
+    $pdo = new \PDO($dsn, $db_settings['user'], $db_settings['password']);
+
+    return $pdo;
+};
+
 // OAuth2
 $container['oauth'] = function ($c) {
-    $db_settings = $c->get('settings')['db'];
+    $db_settings = $c->get('settings')['database'];
 
     $dsn = "mysql:dbname=${db_settings['name']};host=${db_settings['host']}";
     $storage = new OAuth2\Storage\Pdo(['dsn' => $dsn, 'username' => $db_settings['user'], 'password' => $db_settings['password']]);

@@ -4,9 +4,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Response;
+use App\Http\Session;
 use Interop\Container\ContainerInterface;
 use OAuth2\Request as OAuthRequest;
 use OAuth2\Response as OAuthResponse;
+
 
 class OAuthController
 {
@@ -15,6 +17,63 @@ class OAuthController
     public function __construct(ContainerInterface $ci)
     {
         $this->ci = $ci;
+    }
+
+    public function authorize($request, $response, $args)
+    {
+        $server = $this->ci->get('oauth');
+        $oa_request = OAuthRequest::createFromGlobals();
+        $oa_response = new OAuthResponse();
+
+        if (!$server->validateAuthorizeRequest($oa_request, $oa_response)) {
+            return Response::createFromOAuth($oa_response);
+        }
+
+        return $this->ci->get('view')->render($response, 'authorize.twig', [
+            'query_string' => $_SERVER['QUERY_STRING']
+        ]);
+    }
+
+    public function postAuthorize($request, $response, $args)
+    {
+        $server = $this->ci->get('oauth');
+        $oa_request = OAuthRequest::createFromGlobals();
+        $oa_response = new OAuthResponse();
+        
+        $username = $request->getParsedBodyParam('username');
+        $password = $request->getParsedBodyParam('password');
+
+        $stm = $this->ci->get('db')->prepare(
+            'SELECT username AS id, password AS hashed_password
+              FROM oauth_users
+              WHERE username = ?'
+            );
+        $stm->execute([$username]);
+        $user = $stm->fetchAll()[0];
+
+        if (empty($user)) {
+            $this->ci->get('session')->set('username', $username);
+            $this->ci->get('session')->set('password', $password);
+            $this->ci->get('flash')->addMessage('error', 'Provided user does not exist');
+
+            return $response->withRedirect("/authorize?${_SERVER['QUERY_STRING']}");
+        }
+
+        $is_authorized = password_verify($password, $user['hashed_password']);
+
+        if (!$is_authorized) {
+            $this->ci->get('session')->set('username', $username);
+            $this->ci->get('session')->set('password', $password);
+            $this->ci->get('flash')->addMessage('error', 'The provided username/password is not correct.');
+
+            return $response->withRedirect("/authorize?${_SERVER['QUERY_STRING']}");
+        }
+
+        $server->handleAuthorizeRequest($oa_request, $oa_response, $is_authorized, $user['id']);
+
+        Session::destroy();
+
+        return Response::createFromOAuth($oa_response);
     }
 
     public function token($request, $response, $args)
@@ -26,32 +85,13 @@ class OAuthController
         );
     }
 
-    public function authorize($request, $response, $args)
+    public function userInfo($request, $response, $args)
     {
         $server = $this->ci->get('oauth');
-
         $oa_request = OAuthRequest::createFromGlobals();
         $oa_response = new OAuthResponse();
 
-        if (!$server->validateAuthorizeRequest($oa_request, $oa_response)) {
-            return Response::createFromOAuth($oa_response);
-        }
-
-        return $this->ci->get('view')->render($response, 'authorize.phtml', [
-            'query_string' => $_SERVER['QUERY_STRING']
-        ]);
-    }
-
-    public function postAuthorize($request, $response, $args)
-    {
-        $server = $this->ci->get('oauth');
-
-        $oa_request = OAuthRequest::createFromGlobals();
-        $oa_response = new OAuthResponse();
-
-        $is_authorized = ($_POST['authorized'] === 'yes');
-
-        $server->handleAuthorizeRequest($oa_request, $oa_response, $is_authorized);
+        $server->handleUserInfoRequest($oa_request, $oa_response);
 
         return Response::createFromOAuth($oa_response);
     }

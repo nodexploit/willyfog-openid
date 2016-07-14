@@ -1,0 +1,13 @@
+{% if flash.getMessage('error') %}
+    {{ flash.getMessage('error')[0] }}
+{% endif %}
+<form method="post" action="/authorize?{{ query_string }}">
+    <label>Willyfog OpenID Connect Login</label><br/>
+    <label> Username
+        <input type="text" name="username" value="{{ session.get('username') }}" required>
+    </label><br/>
+    <label> Password
+        <input type="password" name="password" value="{{ session.get('password') }}" required>
+    </label><br/>
+    <input type="submit" value="Authorize">
+</form>

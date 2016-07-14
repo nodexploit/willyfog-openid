@@ -17,7 +17,7 @@ return [
         ],
 
         // Database settings
-        'db' => [
+        'database' => [
             'host'      => 'localhost',
             'name'      => 'openid',
             'user'      => 'root',

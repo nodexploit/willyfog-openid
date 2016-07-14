@@ -1,5 +1,10 @@
 <?php
 
-$app->get('/authorize', '\App\Http\Controllers\OAuthController:authorize');
-$app->post('/authorize', '\App\Http\Controllers\OAuthController:postAuthorize');
-$app->post('/token', '\App\Http\Controllers\OAuthController:token');
+$namespace = '\App\Http\Controllers';
+
+$app->group('', function () use ($namespace) {
+    $this->get('/authorize', "$namespace\\OAuthController:authorize");
+    $this->post('/authorize', "$namespace\\OAuthController:postAuthorize");
+    $this->post('/token', "$namespace\\OAuthController:token");
+    $this->post('/userInfo', "$namespace\\OAuthController:userInfo");
+});

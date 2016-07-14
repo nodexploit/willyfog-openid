@@ -5,6 +5,11 @@ willyfog-openid
 
 ## Deploy
 
+```
+git clone https://github.com/soutoner/willyfog-openid.git
+cd willyfog-openid
+```
+
 1. Do the Vagrant!
 
 ```
@@ -16,15 +21,22 @@ $ vagrant ssh
 2. Install dependencies (inside Vagrant): 
 
 ```
-$ cd ~/openid
+$ cd ~/willyfog-openid
 $ composer install
 ```
 
-3. Generate public and private keys:
+3. Bootstrap the db:
+
+```
+$ mysql -uroot -proot -e 'CREATE DATABASE openid'
+$ mysql -uroot -proot openid < db/schema.sql
+```
+
+4. Generate public and private keys:
 
 ```
 $ openssl genrsa -out data/privkey.pem 4096
-$ openssl rsa -in privkey.pem -pubout -out data/pubkey.pem
+$ openssl rsa -in data/privkey.pem -pubout -out data/pubkey.pem
 ```
 
 ## Give it a try
@@ -37,7 +49,7 @@ $ openssl rsa -in privkey.pem -pubout -out data/pubkey.pem
 
 ![Yes we can](docs/authorize.png)
 
-3. Take the `code` param from the query string, and then call:
+3. Take the `code` param from the query string, and then call the `token` endpoint:
 
 ```
 curl http://192.168.33.10/token -d 'grant_type=authorization_code&client_id=testclient&code=<QUEY_STRING_CODE>&redirect_uri=http://127.0.0.1/login'
@@ -57,4 +69,10 @@ And then you will have your brand new access token like this:
     Njg0NDY4NjQsImF1dGhfdGltZSI6MTQ2ODQ0MzI2NH0.pcxhbmsrezlJheJJdG1N8xX8EIb
     nOZNgZQjUoBcjBjfwcBd3HNuzl3sG_b4wWSSzLJon8MydxugE9nFdXT3pED..."
  }
+```
+
+Also, you can use the `userInfo` endpoint with the obtained `access_token`:
+
+```
+curl -X POST -H "Authorization: Bearer <ACCESS_TOKEN>" http://192.168.33.10/userInfo
 ```

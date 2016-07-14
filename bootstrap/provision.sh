@@ -50,15 +50,6 @@ sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password passwor
 sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password root'
 apt-get -y install mysql-server-5.6
 
-# Bootstrap MySQL
-read -r -d '' BOOTSTRAP_DB << ROTO
-CREATE DATABASE openid;
-ROTO
-
-echo "$BOOTSTRAP_DB" > /tmp/bootstrap.sql
-mysql -uroot -proot < /tmp/bootstrap.sql
-mysql -uroot -proot openid < /home/vagrant/openid/db/schema.sql
-
 # Install composer
 curl -OL https://getcomposer.org/composer.phar
 mv composer.phar /usr/local/bin/composer
@@ -71,15 +62,6 @@ mv phpcs.phar /usr/local/bin/phpcs
 curl -OL https://squizlabs.github.io/PHP_CodeSniffer/phpcbf.phar
 chmod +x phpcbf.phar
 mv phpcbf.phar /usr/local/bin/phpcbf
-
-# Library for PDFs
-wget http://wkhtmltopdf.googlecode.com/files/wkhtmltopdf-0.9.9-static-amd64.tar.bz2
-tar xvjf wkhtmltopdf-0.9.9-static-amd64.tar.bz2
-mv wkhtmltopdf-amd64 /usr/local/bin/wkhtmltopdf
-chmod +x /usr/local/bin/wkhtmltopdf
-
-# Alias to Codeception
-echo "alias codecept='php /home/vagrant/$1/vendor/bin/codecept'" >> /home/vagrant/.bash_aliases
 
 service apache2 restart
 

@@ -5,23 +5,12 @@ willyfog-openid
 
 ## Deploy
 
-```
-git clone https://github.com/soutoner/willyfog-openid.git
-cd willyfog-openid
-```
+(Inside Vagrant, see [willyfog-devops](https://github.com/popokis/willyfog-devops) for more details)
 
-1. Do the Vagrant!
+1. Install dependencies:
 
 ```
-$ vagrant up
-$ vagrant ssh
-[...]
-```
-
-2. Install dependencies (inside Vagrant): 
-
-```
-$ cd ~/willyfog-openid
+$ cd ~/willyfog-devops/projects/willyfog-openid
 $ composer install
 ```
 

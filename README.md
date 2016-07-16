@@ -5,41 +5,21 @@ willyfog-openid
 
 ## Deploy
 
-(Inside Vagrant, see [willyfog-devops](https://github.com/popokis/willyfog-devops) for more details)
-
-1. Install dependencies:
-
-```
-$ cd ~/willyfog-devops/projects/willyfog-openid
-$ composer install
-```
-
-3. Bootstrap the db:
-
-```
-$ mysql -uroot -proot -e 'CREATE DATABASE openid'
-$ mysql -uroot -proot openid < db/schema.sql
-```
-
-4. Generate public and private keys:
-
-```
-$ openssl genrsa -out data/privkey.pem 4096
-$ openssl rsa -in data/privkey.pem -pubout -out data/pubkey.pem
-```
+If you came directly here, please see [willyfog](https://github.com/popokis/willyfog)
+ for more details about the deployment.
 
 ## Give it a try
 
 1. Access: 
 
-`http://192.168.33.10/authorize?client_id=testclient&redirect_uri=http://127.0.0.1/login&response_type=code&scope=openid&state=xyz`
+`http://192.168.33.10/authorize?client_id=testclient&redirect_uri=gihttp://192.168.33.10/login/callback&response_type=code&scope=openid&state=xyz`
 
 2. Authorize the request! Try with username `willy` password `foobar`.
 
 3. Take the `code` param from the query string, and then call the `token` endpoint:
 
 ```
-curl http://192.168.33.10/token -d 'grant_type=authorization_code&client_id=testclient&code=<QUEY_STRING_CODE>&redirect_uri=http://127.0.0.1/login'
+curl http://192.168.33.10/token -d 'grant_type=authorization_code&client_id=testclient&code=<QUEY_STRING_CODE>&redirect_uri=http://192.168.33.10/login/callback'
 ```
 
 And then you will have your brand new access token like this:

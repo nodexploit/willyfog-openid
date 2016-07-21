@@ -1,9 +1,7 @@
 <?php
-// DIC configuration
 
 $container = $app->getContainer();
 
-// monolog
 $container['logger'] = function ($c) {
     $settings = $c->get('settings')['logger'];
     $logger = new Monolog\Logger($settings['name']);
@@ -13,7 +11,6 @@ $container['logger'] = function ($c) {
     return $logger;
 };
 
-// Session
 $container['session'] = function ($c) {
     return new \App\Http\Session();
 };
@@ -22,7 +19,6 @@ $container['flash'] = function ($c) {
     return new \Slim\Flash\Messages();
 };
 
-// view renderer
 $container['view'] = function ($c) {
     $settings = $c->get('settings')['renderer'];
 
@@ -37,21 +33,22 @@ $container['view'] = function ($c) {
     return $view;
 };
 
-// PDO
-$container['db'] = function ($c) {
-    $db_settings = $c->get('settings')['database'];
-    $dsn = "mysql:dbname=${db_settings['name']};host=${db_settings['host']}";
-    $pdo = new \PDO($dsn, $db_settings['user'], $db_settings['password']);
+$container['pdo'] = function ($c) {
+    $database = $c->get('settings')['database'];
+    $dsn = "mysql:dbname=${database['name']};host=${database['host']}";
 
-    return $pdo;
+    return new \PDO($dsn, $database['username'], $database['password']);
 };
 
-// OAuth2
 $container['oauth'] = function ($c) {
-    $db_settings = $c->get('settings')['database'];
+    $database = $c->get('settings')['database'];
 
-    $dsn = "mysql:dbname=${db_settings['name']};host=${db_settings['host']}";
-    $storage = new OAuth2\Storage\Pdo(['dsn' => $dsn, 'username' => $db_settings['user'], 'password' => $db_settings['password']]);
+    $dsn = "mysql:dbname=${database['name']};host=${database['host']}";
+    $storage = new \App\Lib\OAuth2\Pdo([
+        'dsn' => $dsn,
+        'username' => $database['username'],
+        'password' => $database['password']
+    ]);
 
     $grant_types = [
         'authorization_code' => new \OAuth2\OpenID\GrantType\AuthorizationCode($storage),

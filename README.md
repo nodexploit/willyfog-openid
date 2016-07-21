@@ -12,14 +12,14 @@ If you came directly here, please see [willyfog](https://github.com/popokis/will
 
 1. Access: 
 
-`http://192.168.33.10/authorize?client_id=testclient&redirect_uri=gihttp://192.168.33.10/login/callback&response_type=code&scope=openid&state=xyz`
+`http://openid.willyfog.com/authorize?client_id=testclient&redirect_uri=gihttp://willyfog.com/login/callback&response_type=code&scope=openid&state=xyz`
 
-2. Authorize the request! Try with username `willy` password `foobar`.
+2. Authorize the request! Try with email `willy@example.com` password `foobar`.
 
 3. Take the `code` param from the query string, and then call the `token` endpoint:
 
 ```
-curl http://192.168.33.10/token -d 'grant_type=authorization_code&client_id=testclient&code=<QUEY_STRING_CODE>&redirect_uri=http://192.168.33.10/login/callback'
+curl http://openid.willyfog.com/token -d 'grant_type=authorization_code&client_id=testclient&code=<QUEY_STRING_CODE>&redirect_uri=http://willyfog.com/login/callback'
 ```
 
 And then you will have your brand new access token like this:
@@ -41,5 +41,5 @@ And then you will have your brand new access token like this:
 Also, you can use the `userInfo` endpoint with the obtained `access_token`:
 
 ```
-curl -X POST -H "Authorization: Bearer <ACCESS_TOKEN>" http://192.168.33.10/userInfo
+curl -X POST -H "Authorization: Bearer <ACCESS_TOKEN>" http://openid.willyfog.com/userInfo
 ```

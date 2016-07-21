@@ -3,8 +3,8 @@
 {% endif %}
 <form method="post" action="/authorize?{{ query_string }}">
     <label>Willyfog OpenID Connect Login</label><br/>
-    <label> Username
-        <input type="text" name="username" value="{{ session.get('username') }}" required>
+    <label> Email
+        <input type="email" name="email" value="{{ session.get('email') }}" required>
     </label><br/>
     <label> Password
         <input type="password" name="password" value="{{ session.get('password') }}" required>

@@ -5,10 +5,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Response;
 use App\Http\Session;
+use App\Models\User;
 use Interop\Container\ContainerInterface;
 use OAuth2\Request as OAuthRequest;
 use OAuth2\Response as OAuthResponse;
-
 
 class OAuthController
 {
@@ -40,19 +40,14 @@ class OAuthController
         $oa_request = OAuthRequest::createFromGlobals();
         $oa_response = new OAuthResponse();
         
-        $username = $request->getParsedBodyParam('username');
+        $email = $request->getParsedBodyParam('email');
         $password = $request->getParsedBodyParam('password');
 
-        $stm = $this->ci->get('db')->prepare(
-            'SELECT username AS id, password AS hashed_password
-              FROM oauth_users
-              WHERE username = ?'
-            );
-        $stm->execute([$username]);
-        $user = $stm->fetchAll()[0];
+        $user = new User($this->ci);
+        $user = $user->find($email);
 
         if (empty($user)) {
-            $this->ci->get('session')->set('username', $username);
+            $this->ci->get('session')->set('username', $email);
             $this->ci->get('session')->set('password', $password);
             $this->ci->get('flash')->addMessage('error', 'Provided user does not exist');
 
@@ -62,9 +57,9 @@ class OAuthController
         $is_authorized = password_verify($password, $user['hashed_password']);
 
         if (!$is_authorized) {
-            $this->ci->get('session')->set('username', $username);
+            $this->ci->get('session')->set('username', $email);
             $this->ci->get('session')->set('password', $password);
-            $this->ci->get('flash')->addMessage('error', 'The provided username/password is not correct.');
+            $this->ci->get('flash')->addMessage('error', 'The provided email/password is not correct.');
 
             return $response->withRedirect("/authorize?${_SERVER['QUERY_STRING']}");
         }

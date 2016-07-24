@@ -27,4 +27,19 @@ class Pdo extends \OAuth2\Storage\Pdo
             ]
         );
     }
+
+    public function getUser($user_id)
+    {
+        $stmt = $this->db->prepare($sql = sprintf('SELECT * from %s where id=:user_id', $this->config['user_table']));
+        $stmt->execute(array('user_id' => $user_id));
+
+        if (!$userInfo = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            return false;
+        }
+
+        // the default behavior is to use "username" as the user_id
+        return array_merge(array(
+            'user_id' => $user_id
+        ), $userInfo);
+    }
 }

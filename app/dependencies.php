@@ -63,6 +63,7 @@ $container['oauth'] = function ($c) {
         'allow_implicit' => true,
         'use_openid_connect' => true,
         'issuer' => $_SERVER['HTTP_HOST'],
+        'access_lifetime' => 86400 // 24 hours
     ], $grant_types);
 
     $publicKey  = file_get_contents(APP_PATH . '/data/pubkey.pem');

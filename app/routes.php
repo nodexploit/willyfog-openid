@@ -7,4 +7,6 @@ $app->group('', function () use ($namespace) {
     $this->post('/authorize', "$namespace\\OAuthController:postAuthorize");
     $this->post('/token', "$namespace\\OAuthController:token");
     $this->post('/userInfo', "$namespace\\OAuthController:userInfo");
+
+    $this->get('/public-key', "$namespace\\OAuthController:pubKey");
 });

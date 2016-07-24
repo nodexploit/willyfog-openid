@@ -90,4 +90,18 @@ class OAuthController
 
         return Response::createFromOAuth($oa_response);
     }
+
+    /**
+     * TODO: handle absence of pubkey
+     *
+     * @param $request
+     * @param $response
+     * @param $args
+     */
+    public function pubKey($request, $response, $args)
+    {
+        $key = file_get_contents(APP_PATH . '/data/pubkey.pem');
+
+        return $response->write($key);
+    }
 }

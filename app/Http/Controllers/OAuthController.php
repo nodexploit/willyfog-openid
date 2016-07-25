@@ -97,6 +97,7 @@ class OAuthController
      * @param $request
      * @param $response
      * @param $args
+     * @return mixed
      */
     public function pubKey($request, $response, $args)
     {

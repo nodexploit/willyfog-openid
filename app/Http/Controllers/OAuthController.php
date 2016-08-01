@@ -9,6 +9,7 @@ use App\Models\User;
 use Interop\Container\ContainerInterface;
 use OAuth2\Request as OAuthRequest;
 use OAuth2\Response as OAuthResponse;
+use Slim\Http\Request;
 
 class OAuthController
 {
@@ -25,7 +26,15 @@ class OAuthController
         $oa_request = OAuthRequest::createFromGlobals();
         $oa_response = new OAuthResponse();
 
+
         if (!$server->validateAuthorizeRequest($oa_request, $oa_response)) {
+            return Response::createFromOAuth($oa_response);
+        }
+
+        // Implicit flow javascript client
+        if ($request->getQueryParam('response_type') == 'token') {
+            $server->handleAuthorizeRequest($oa_request, $oa_response, true);
+
             return Response::createFromOAuth($oa_response);
         }
 

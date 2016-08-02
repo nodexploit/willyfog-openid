@@ -26,17 +26,9 @@ class OAuthController
         $oa_request = OAuthRequest::createFromGlobals();
         $oa_response = new OAuthResponse();
 
-
         if (!$server->validateAuthorizeRequest($oa_request, $oa_response)) {
             return Response::createFromOAuth($oa_response);
-        }
-
-        // Implicit flow javascript client
-        if ($request->getQueryParam('response_type') == 'token') {
-            $server->handleAuthorizeRequest($oa_request, $oa_response, true);
-
-            return Response::createFromOAuth($oa_response);
-        }
+        } 
 
         return $this->ci->get('view')->render($response, 'authorize.twig', [
             'query_string' => $_SERVER['QUERY_STRING']

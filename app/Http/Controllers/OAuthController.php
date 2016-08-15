@@ -3,13 +3,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Response;
 use App\Http\Session;
 use App\Models\User;
 use Interop\Container\ContainerInterface;
 use OAuth2\Request as OAuthRequest;
 use OAuth2\Response as OAuthResponse;
 use Slim\Http\Request;
+use Slim\Http\Response;
+use App\Http\Response as WResponse;
 
 class OAuthController
 {
@@ -20,22 +21,14 @@ class OAuthController
         $this->ci = $ci;
     }
 
-    public function authorize($request, $response, $args)
+    public function authorize(Request $request, Response $response, array $args)
     {
-        $server = $this->ci->get('oauth');
-        $oa_request = OAuthRequest::createFromGlobals();
-        $oa_response = new OAuthResponse();
-
-        if (!$server->validateAuthorizeRequest($oa_request, $oa_response)) {
-            return Response::createFromOAuth($oa_response);
-        } 
-
         return $this->ci->get('view')->render($response, 'authorize.twig', [
             'query_string' => $_SERVER['QUERY_STRING']
         ]);
     }
 
-    public function postAuthorize($request, $response, $args)
+    public function postAuthorize(Request $request, Response $response, array $args)
     {
         $server = $this->ci->get('oauth');
         $oa_request = OAuthRequest::createFromGlobals();
@@ -48,7 +41,7 @@ class OAuthController
         $user = $user->find($email);
 
         if (empty($user)) {
-            $this->ci->get('session')->set('username', $email);
+            $this->ci->get('session')->set('email', $email);
             $this->ci->get('session')->set('password', $password);
             $this->ci->get('flash')->addMessage('error', 'Provided user does not exist');
 
@@ -58,7 +51,7 @@ class OAuthController
         $is_authorized = password_verify($password, $user['hashed_password']);
 
         if (!$is_authorized) {
-            $this->ci->get('session')->set('username', $email);
+            $this->ci->get('session')->set('email', $email);
             $this->ci->get('session')->set('password', $password);
             $this->ci->get('flash')->addMessage('error', 'The provided email/password is not correct.');
 
@@ -69,19 +62,19 @@ class OAuthController
 
         Session::destroy();
 
-        return Response::createFromOAuth($oa_response);
+        return WResponse::createFromOAuth($oa_response);
     }
 
-    public function token($request, $response, $args)
+    public function token(Request $request, Response $response, array $args)
     {
         $server = $this->ci->get('oauth');
 
-        return Response::createFromOAuth(
+        return WResponse::createFromOAuth(
             $server->handleTokenRequest(OAuthRequest::createFromGlobals())
         );
     }
 
-    public function userInfo($request, $response, $args)
+    public function userInfo(Request $request, Response $response, array $args)
     {
         $server = $this->ci->get('oauth');
         $oa_request = OAuthRequest::createFromGlobals();
@@ -89,7 +82,7 @@ class OAuthController
 
         $server->handleUserInfoRequest($oa_request, $oa_response);
 
-        return Response::createFromOAuth($oa_response);
+        return WResponse::createFromOAuth($oa_response);
     }
 
     /**
@@ -100,7 +93,7 @@ class OAuthController
      * @param $args
      * @return mixed
      */
-    public function pubKey($request, $response, $args)
+    public function pubKey(Request $request, Response $response, array $args)
     {
         $key = file_get_contents(APP_PATH . '/data/pubkey.pem');
 

@@ -17,5 +17,5 @@ $app->group('', function () use ($namespace) {
 $app->group('/api/v1', function () use ($namespace) {
     $namespace .= '\V1';
 
-    $this->post('/user/new', "$namespace\\UserController:create");
+    $this->post('/users/new', "$namespace\\UserController:create");
 })->add($oauth);

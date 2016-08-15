@@ -23,6 +23,14 @@ class OAuthController
 
     public function authorize(Request $request, Response $response, array $args)
     {
+        $server = $this->ci->get('oauth');
+        $oa_request = OAuthRequest::createFromGlobals();
+        $oa_response = new OAuthResponse();
+
+        if (!$server->validateAuthorizeRequest($oa_request, $oa_response)) {
+            return WResponse::createFromOAuth($oa_response);
+        }
+
         return $this->ci->get('view')->render($response, 'authorize.twig', [
             'query_string' => $_SERVER['QUERY_STRING']
         ]);

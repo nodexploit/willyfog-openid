@@ -34,7 +34,7 @@ class OAuthMiddleware
         $oa_request = OAuthRequest::createFromGlobals();
         $oa_response = new OAuthResponse();
 
-        if (!$server->validateAuthorizeRequest($oa_request, $oa_response)) {
+        if (!$server->verifyResourceRequest($oa_request, $oa_response)) {
             return WResponse::createFromOAuth($oa_response);
         }
 

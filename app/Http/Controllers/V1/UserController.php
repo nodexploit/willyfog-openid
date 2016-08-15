@@ -32,15 +32,33 @@ class UserController
         ]);
 
         if ($user_id === null) {
-            return $response->withJson('Oops, something went wrong while creating the user.', 409);
+            return $response->withJson([
+                'status' => 'Oops, something went wrong with the user data',
+                'messages' => $user->getMessages()
+            ]);
         }
 
         $last_id = $user->registerInDegree($user_id, $params['degree_id']);
 
         if ($last_id === null) {
-            return $response->withJson('Oops, something went wrong with the degree id.', 409);
+            return $response->withJson([
+                'status' => 'Oops, something went wrong with the degree id',
+                'messages' => $user->getMessages()
+            ]);
         }
 
-        return $response->withJson('User successfully created');
+        $last_id = $user->assignRole($user_id, $params['role_id']);
+
+        if ($last_id === null) {
+            return $response->withJson([
+                    'status' => 'Oops, something went wrong with the role id',
+                    'messages' => $user->getMessages()
+                ]);
+        }
+
+        return $response->withJson([
+            'status' => 'Success',
+            'messages' => 'User successfully created'
+        ]);
     }
 }

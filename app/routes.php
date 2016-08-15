@@ -4,7 +4,7 @@ $namespace = '\App\Http\Controllers';
 
 $app->group('', function () use ($namespace) {
     $this->get('/authorize', "$namespace\\OAuthController:authorize");
-})->add($oauth);
+});
 
 $app->group('', function () use ($namespace) {
     $this->post('/authorize', "$namespace\\OAuthController:postAuthorize");

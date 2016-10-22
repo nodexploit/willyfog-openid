@@ -38,13 +38,15 @@ class UserController
             ]);
         }
 
-        $last_id = $user->registerInDegree($user_id, $params['degree_id']);
+        if ($params['degree_id'] != 0) {
+            $last_id = $user->registerInDegree($user_id, $params['degree_id']);
 
-        if ($last_id === null) {
-            return $response->withJson([
-                'status' => 'Oops, something went wrong with the degree id',
-                'messages' => $user->getMessages()
-            ]);
+            if ($last_id === null) {
+                return $response->withJson([
+                    'status' => 'Oops, something went wrong with the degree id',
+                    'messages' => $user->getMessages()
+                ]);
+            }
         }
 
         $last_id = $user->assignRole($user_id, $params['role_id']);

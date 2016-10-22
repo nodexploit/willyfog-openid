@@ -66,11 +66,28 @@ class User extends BaseModel
             }
         }
 
-        return count($this->messages) <= 0;
+        return count($this->messages) <= 0 && $this->isUnique($params['email']);
     }
 
     public function getMessages()
     {
         return $this->messages;
+    }
+    
+    public function isUnique($email) {
+        $stm = $this->pdo->prepare(
+            'SELECT id
+              FROM user
+              WHERE email = ?'
+        );
+        $stm->execute([$email]);
+
+        $unique = count($stm->fetchAll()) <= 0;
+
+        if (!$unique) {
+            $this->messages []= "Email already registered";
+        }
+
+        return $unique;
     }
 }

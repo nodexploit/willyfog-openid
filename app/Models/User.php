@@ -46,6 +46,18 @@ class User extends BaseModel
         return $success ? $this->pdo->lastInsertId() : null;
     }
 
+    public function registerInCentre($user_id, $centre_id)
+    {
+        $stm = $this->pdo->prepare(
+            'INSERT INTO user_coordinates_centre
+             (user_id, centre_id) VALUES (?, ?)'
+        );
+
+        $success = $stm->execute([$user_id, $centre_id]);
+
+        return $success ? $this->pdo->lastInsertId() : null;
+    }
+
     public function assignRole($user_id, $role_id)
     {
         $stm = $this->pdo->prepare(

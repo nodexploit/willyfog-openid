@@ -38,7 +38,7 @@ class UserController
             ]);
         }
 
-        if ($params['degree_id'] != 0) {
+        if ($params['degree_id'] != 0) { // Student registration
             $last_id = $user->registerInDegree($user_id, $params['degree_id']);
 
             if ($last_id === null) {
@@ -46,6 +46,17 @@ class UserController
                     'status' => 'Oops, something went wrong with the degree id',
                     'messages' => $user->getMessages()
                 ]);
+            }
+        } else {
+            if ($params['centre_id'] != 0) { // Coordinator needs to be related with center
+                $last_id = $user->registerInCentre($user_id, $params['centre_id']);
+
+                if ($last_id === null) {
+                    return $response->withJson([
+                        'status' => 'Oops, something went wrong with the centre id',
+                        'messages' => $user->getMessages()
+                    ]);
+                }
             }
         }
 
